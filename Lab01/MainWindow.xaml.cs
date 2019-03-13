@@ -43,7 +43,8 @@ namespace Lab01
         {
             if(int.TryParse(ageTextBox.Text, out int Age) && int.Parse(ageTextBox.Text) <= 99 && int.Parse(ageTextBox.Text) > 0)
             {
-                people.Add(new Person { Age = int.Parse(ageTextBox.Text), Name = nameTextBox.Text }); 
+                people.Add(new Person { Age = int.Parse(ageTextBox.Text), Name = nameTextBox.Text });
+                ageTextBox.BorderBrush = Brushes.Gray;
             }
             else
             {
