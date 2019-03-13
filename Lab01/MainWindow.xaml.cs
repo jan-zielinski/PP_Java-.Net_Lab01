@@ -26,7 +26,8 @@ namespace Lab01
         {
             new Person { Name = "Jan", Age = 21 },
             new Person { Name = "Laura", Age = 21 }
-        }; 
+        };
+        private string imagePath;
 
         public ObservableCollection<Person> Items
         {
@@ -38,10 +39,10 @@ namespace Lab01
             InitializeComponent();
             DataContext = this; //Jest to potrzebne do dataBindingu
         }
-        
+
         private void AddNewPersonButton_Click(object sender, RoutedEventArgs e)
         {
-            if(int.TryParse(ageTextBox.Text, out int Age) && int.Parse(ageTextBox.Text) <= 99 && int.Parse(ageTextBox.Text) > 0)
+            if (int.TryParse(ageTextBox.Text, out int Age) && int.Parse(ageTextBox.Text) <= 99 && int.Parse(ageTextBox.Text) > 0)
             {
                 people.Add(new Person { Age = int.Parse(ageTextBox.Text), Name = nameTextBox.Text, Picture = (BitmapImage)photoPreview.Source });
                 ageTextBox.BorderBrush = Brushes.Gray;
@@ -49,7 +50,9 @@ namespace Lab01
             else
             {
                 ageTextBox.BorderBrush = Brushes.Red;
+                ageTextBox.Text = "Age must be an number!";
             }
+        }
         
             //Jakies bugi tutaj
         private void AddPhoto_Click(object sender, RoutedEventArgs e)
@@ -63,7 +66,7 @@ namespace Lab01
             }
         }
 
-        }
+       
+    }
 
     }
-}
