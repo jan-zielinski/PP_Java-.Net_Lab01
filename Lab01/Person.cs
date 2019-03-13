@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
+using System.Windows.Media.Imaging; //Dyrektywa potrzebna do zdjecia
 
 namespace Lab01
 {
@@ -11,5 +12,6 @@ namespace Lab01
     {
         public string Name { get; set; }
         public int Age { get; set; }
+        public BitmapImage Picture { get; set; }
     }
 }
