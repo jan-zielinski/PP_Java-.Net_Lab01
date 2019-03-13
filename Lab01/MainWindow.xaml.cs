@@ -37,7 +37,7 @@ namespace Lab01
         public MainWindow()
         {
             InitializeComponent();
-            DataContext = this; //Jest to potrzebne do dataBindingu
+            DataContext = this; 
         }
 
         private void AddNewPersonButton_Click(object sender, RoutedEventArgs e)
@@ -54,7 +54,7 @@ namespace Lab01
             }
         }
         
-            //Jakies bugi tutaj
+        
         private void AddPhoto_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog fileDialog = new OpenFileDialog();
