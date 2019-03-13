@@ -1,0 +1,49 @@
+﻿<Window x:Class="Lab01.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Lab01"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="459.813" Width="1109.813">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        
+        <StackPanel Grid.Column="0" Margin="20" Orientation="Vertical">
+            
+            <StackPanel Orientation="Horizontal">
+                <TextBlock TextWrapping="Wrap" Text="Name" Width="100"/>
+                <TextBlock TextWrapping="Wrap" Text="Age" Width="100"/>
+            </StackPanel>
+            
+            <ListBox Margin="0,10,0,0" ItemsSource="{Binding Items}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Path=Name}" Width="100"/>
+                            <TextBlock Text="{ Binding Path=Age}" Width="100"/>
+                            
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            
+        </StackPanel>
+        
+        <StackPanel Grid.Column="2" Margin="20" Orientation="Vertical">
+            
+            <TextBlock TextWrapping="Wrap" Text="Name"/>
+            <TextBox Name ="nameTextBox" Height="23" TextWrapping="Wrap" Text="Jarosław" Margin="0,0,0,10"/>
+            <TextBlock TextWrapping="Wrap" Text="Age"/>
+            <TextBox Name="ageTextBox" Height="23" TextWrapping="Wrap" 
+                     Text="99"  Margin="0,0,0,10"/>
+            <Button Name = "addNewPersonButton" Content="Add new person" Cursor="Hand" 
+                    Click="AddNewPersonButton_Click" />
+            <Button Name="addPhoto" Content="Wgraj zdjecie" Cursor="Hand" Margin="0,10"/>
+            
+        </StackPanel>
+    </Grid>
+</Window>
