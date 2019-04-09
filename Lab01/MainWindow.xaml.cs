@@ -2,8 +2,13 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Http; //Do pobierania danych z uri
 using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -14,6 +19,12 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Xml;
+using System.Xml.Linq;
+using System.Drawing;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+
 
 namespace Lab01
 {
@@ -27,34 +38,47 @@ namespace Lab01
             new Person { Name = "Jan", Age = 21 },
             new Person { Name = "Laura", Age = 21 }
         };
+
         private string imagePath;
+
+        public static HttpClient Client => client;
+        private static HttpClient client = new HttpClient();
+        private static Random random = new Random();
+
 
         public ObservableCollection<Person> Items
         {
             get => people;
         }
 
+
+
         public MainWindow()
         {
             InitializeComponent();
-            DataContext = this; 
+            DataContext = this;
+            GetWeatherData();
+
+            RunPeriodically(OnTick, TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5)).ContinueWith(task => { }, TaskScheduler.FromCurrentSynchronizationContext());
         }
+
 
         private void AddNewPersonButton_Click(object sender, RoutedEventArgs e)
         {
             if (int.TryParse(ageTextBox.Text, out int Age) && int.Parse(ageTextBox.Text) <= 99 && int.Parse(ageTextBox.Text) > 0)
             {
                 people.Add(new Person { Age = int.Parse(ageTextBox.Text), Name = nameTextBox.Text, Picture = (BitmapImage)photoPreview.Source });
-                ageTextBox.BorderBrush = Brushes.Gray;
+                ageTextBox.BorderBrush = System.Windows.Media.Brushes.Gray;
             }
             else
             {
-                ageTextBox.BorderBrush = Brushes.Red;
-                ageTextBox.Text = "Age must be an number!";
+                ageTextBox.BorderBrush = System.Windows.Media.Brushes.Red;
+                MessageBox.Show("Age must be an number!");
+                ageTextBox.Text = string.Empty;
             }
         }
-        
-        
+
+
         private void AddPhoto_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog fileDialog = new OpenFileDialog();
@@ -66,7 +90,113 @@ namespace Lab01
             }
         }
 
-       
-    }
+        private void EnterWebsite_Click(object sender, RoutedEventArgs e) => EnterWebsite();
+
+        //Dodaje nowa osoba do 'ObservableCollection' przy uzyciu HttpClient. Za pomoca Regex wyciagamy tytul, oraz pierwszy napotkany int
+        private async void EnterWebsite()
+        {
+            try
+            {
+                string result = await Client.GetStringAsync(websiteTextBox.Text);
+
+                string name = Regex.Match(result, @"<title>\s*(.+?)\s*</title>", RegexOptions.IgnoreCase).Groups["1"].Value;
+                //https://www.dotnetperls.com/title-html
+                string ageString = Regex.Match(result, "[0-9]+").Value;
+
+                if (int.TryParse(ageString, out int age))
+                {
+                    people.Add(new Person { Age = age, Name = name });
+                }
+
+                else
+                {
+                    MessageBox.Show("Age must be number");
+                }
+            }
+            catch (Exception ex)
+            {
+                if (ex is HttpRequestException)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+
+                else
+                {
+                    MessageBox.Show("Unkown Exception caught");
+                }
+            }
+        }
+
+        //StackOverflow
+        private void OnTick() => EnterWebsite();
+
+        //Zadanie które perdiodycznie wywołuje funkcję OnTick
+        //Ontick - delegat na wydarzenie wywołujące OnTick
+        //dueTime - parametr TimeSpana mowi po jakim czasie zacznie wykonywac sie periodic loop
+        //interval - co ile bedzie wykonywane zadanie OnTick (wejscie na strone)
+        //
+        private async Task RunPeriodically(Action OnTick, TimeSpan dueTime, TimeSpan interval)
+        {
+            //Poczatkowy czas oczekiwania, zanim zaczniemy while'a ("periodic loop")
+            if (dueTime > TimeSpan.Zero)
+            {
+                await Task.Delay(dueTime);
+            }
+
+            while (true)
+            {
+                //Wywoluje nasza funkcje OnTick
+                OnTick?.Invoke();
+
+                //Czeka aby wywolac ponownie
+                if (interval > TimeSpan.Zero)
+                {
+                    await Task.Delay(interval);
+                }
+            }
+        }
+
+        private async void GetWeatherData()
+        {
+
+            Console.WriteLine("tekst");
+            string apiKey = "1b6714e500f0cdd864a8b49ec6ac5e45";
+            string apiBaseUrl = "https://api.openweathermap.org/data/2.5/weather";
+
+
+            await Task.Run(() =>
+            {
+                using (var client = new WebClient())
+                {
+                    while (true)
+                    {
+                        //string apiCall = apiBaseUrl + "?q=" + "London" + "&apikey=" + apiKey;
+                        List<string> cities = new List<string> {
+                                "London", "Warsaw", "Paris", "London", "Warsaw" };
+
+                        for (int i = 1; i <= cities.Count; i++)
+                        {
+                            string city = cities[i - 1];
+
+                            string apiCall = apiBaseUrl + "?q=" + city + "&apikey=" + apiKey;
+                            String jsonString = client.DownloadString(apiCall);
+                            var jsonObject = JsonConvert.DeserializeObject<JObject>(jsonString);
+                            String name = jsonObject["name"].ToString();
+                            String temp = jsonObject["main"]["humidity"].ToString();
+
+
+                            Dispatcher.Invoke(() =>
+                            {
+                                people.Add(new Person { Age = int.Parse(temp), Name = name });
+                            });
+
+                            Thread.Sleep(5000);
+                        }
+                    }
+                }
+            });
+
+        }
 
     }
+}
