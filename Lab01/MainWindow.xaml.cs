@@ -5,7 +5,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Net.Http; //Do pobierania danych z uri
+using System.Net.Http; 
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -28,9 +28,6 @@ using Newtonsoft.Json.Linq;
 
 namespace Lab01
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         ObservableCollection<Person> people = new ObservableCollection<Person>
@@ -59,7 +56,7 @@ namespace Lab01
             DataContext = this;
             GetWeatherData();
 
-            RunPeriodically(OnTick, TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5)).ContinueWith(task => { }, TaskScheduler.FromCurrentSynchronizationContext());
+            RunPeriodically(OnTick, TimeSpan.FromSeconds(10), TimeSpan.FromSeconds(5)).ContinueWith(task => { }, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
 
@@ -127,7 +124,7 @@ namespace Lab01
             }
         }
 
-        //StackOverflow
+        
         private void OnTick() => EnterWebsite();
 
         //Zadanie które perdiodycznie wywołuje funkcję OnTick
@@ -137,7 +134,6 @@ namespace Lab01
         //
         private async Task RunPeriodically(Action OnTick, TimeSpan dueTime, TimeSpan interval)
         {
-            //Poczatkowy czas oczekiwania, zanim zaczniemy while'a ("periodic loop")
             if (dueTime > TimeSpan.Zero)
             {
                 await Task.Delay(dueTime);
@@ -145,10 +141,8 @@ namespace Lab01
 
             while (true)
             {
-                //Wywoluje nasza funkcje OnTick
                 OnTick?.Invoke();
 
-                //Czeka aby wywolac ponownie
                 if (interval > TimeSpan.Zero)
                 {
                     await Task.Delay(interval);
@@ -168,11 +162,10 @@ namespace Lab01
             {
                 using (var client = new WebClient())
                 {
-                    while (true)
-                    {
+                    
                         //string apiCall = apiBaseUrl + "?q=" + "London" + "&apikey=" + apiKey;
                         List<string> cities = new List<string> {
-                                "London", "Warsaw", "Paris", "London", "Warsaw" };
+                                "London", "Warsaw", "Paris", "Berlin", "Tokyo" };
 
                         for (int i = 1; i <= cities.Count; i++)
                         {
@@ -190,8 +183,8 @@ namespace Lab01
                                 people.Add(new Person { Age = int.Parse(temp), Name = name });
                             });
 
-                            Thread.Sleep(5000);
-                        }
+                            Thread.Sleep(5);
+                        
                     }
                 }
             });
