@@ -162,34 +162,60 @@ namespace Lab01
             {
                 using (var client = new WebClient())
                 {
-                    
-                        //string apiCall = apiBaseUrl + "?q=" + "London" + "&apikey=" + apiKey;
-                        List<string> cities = new List<string> {
+
+                    //string apiCall = apiBaseUrl + "?q=" + "London" + "&apikey=" + apiKey;
+                    List<string> cities = new List<string> {
                                 "London", "Warsaw", "Paris", "Berlin", "Tokyo" };
 
-                        for (int i = 1; i <= cities.Count; i++)
+                    for (int i = 1; i <= cities.Count; i++)
+                    {
+                        string city = cities[i - 1];
+
+                        string apiCall = apiBaseUrl + "?q=" + city + "&apikey=" + apiKey;
+                        String jsonString = client.DownloadString(apiCall);
+                        var jsonObject = JsonConvert.DeserializeObject<JObject>(jsonString);
+                        String name = jsonObject["name"].ToString();
+                        String temp = jsonObject["main"]["humidity"].ToString();
+
+
+                        Dispatcher.Invoke(() =>
                         {
-                            string city = cities[i - 1];
+                            people.Add(new Person { Age = int.Parse(temp), Name = name });
+                        });
 
-                            string apiCall = apiBaseUrl + "?q=" + city + "&apikey=" + apiKey;
-                            String jsonString = client.DownloadString(apiCall);
-                            var jsonObject = JsonConvert.DeserializeObject<JObject>(jsonString);
-                            String name = jsonObject["name"].ToString();
-                            String temp = jsonObject["main"]["humidity"].ToString();
+                        Thread.Sleep(5);
 
-
-                            Dispatcher.Invoke(() =>
-                            {
-                                people.Add(new Person { Age = int.Parse(temp), Name = name });
-                            });
-
-                            Thread.Sleep(5);
-                        
                     }
                 }
             });
 
         }
 
+        /// <summary>
+        /// Uzytkowni ma mozliwosc wyboru dla jakie miasto chce dodac do tabeli
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void EnterWeatherApi_Click(object sender, RoutedEventArgs e) => EnterWeatherApi();
+        
+        private void EnterWeatherApi()
+        {
+            string apiKey = "1b6714e500f0cdd864a8b49ec6ac5e45";
+            string apiBaseUrl = "https://api.openweathermap.org/data/2.5/weather";
+
+            using (var client = new WebClient())
+            {
+                string city = cityTextBox.Text;
+
+                string apiCall = apiBaseUrl + "?q=" + city + "&apikey=" + apiKey;
+                String jsonString = client.DownloadString(apiCall);
+                var jsonObject = JsonConvert.DeserializeObject<JObject>(jsonString);
+                String name = jsonObject["name"].ToString();
+                String temp = jsonObject["clouds"]["all"].ToString();
+
+                people.Add(new Person { Age = int.Parse(temp), Name = name });
+
+            }
+        }
     }
 }
