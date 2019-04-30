@@ -94,7 +94,7 @@ namespace Lab01
 
         private void EnterWebsite_Click(object sender, RoutedEventArgs e) => EnterWebsite();
 
-        //Dodaje nowa osoba do 'ObservableCollection' przy uzyciu HttpClient. Za pomoca Regex wyciagamy tytul, oraz pierwszy napotkany int
+        
         private async void EnterWebsite()
         {
             try
@@ -132,11 +132,7 @@ namespace Lab01
 
         private void OnTick() => EnterWebsite();
 
-        //Zadanie które perdiodycznie wywołuje funkcję OnTick
-        //Ontick - delegat na wydarzenie wywołujące OnTick
-        //dueTime - parametr TimeSpana mowi po jakim czasie zacznie wykonywac sie periodic loop
-        //interval - co ile bedzie wykonywane zadanie OnTick (wejscie na strone)
-        //
+        
         private async Task RunPeriodically(Action OnTick, TimeSpan dueTime, TimeSpan interval)
         {
             if (dueTime > TimeSpan.Zero)
@@ -196,11 +192,7 @@ namespace Lab01
 
         }
 
-        /// <summary>
-        /// Uzytkowni ma mozliwosc wyboru dla jakie miasto chce dodac do tabeli
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+        
         private void EnterWeatherApi_Click(object sender, RoutedEventArgs e) => EnterWeatherApi();
 
         private void EnterWeatherApi()
