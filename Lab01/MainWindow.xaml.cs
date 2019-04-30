@@ -36,6 +36,10 @@ namespace Lab01
             new Person { Name = "Laura", Age = 21 }
         };
 
+        //DB
+        Customer model = new Customer();
+        public static DataGrid datagrid;
+       
         private string imagePath;
 
         public static HttpClient Client => client;
@@ -55,6 +59,7 @@ namespace Lab01
             InitializeComponent();
             DataContext = this;
             GetWeatherData();
+            LoadDB();
 
             RunPeriodically(OnTick, TimeSpan.FromSeconds(10), TimeSpan.FromSeconds(5)).ContinueWith(task => { }, TaskScheduler.FromCurrentSynchronizationContext());
         }
@@ -124,7 +129,7 @@ namespace Lab01
             }
         }
 
-        
+
         private void OnTick() => EnterWebsite();
 
         //Zadanie które perdiodycznie wywołuje funkcję OnTick
@@ -197,7 +202,7 @@ namespace Lab01
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void EnterWeatherApi_Click(object sender, RoutedEventArgs e) => EnterWeatherApi();
-        
+
         private void EnterWeatherApi()
         {
             string apiKey = "1b6714e500f0cdd864a8b49ec6ac5e45";
@@ -217,5 +222,43 @@ namespace Lab01
 
             }
         }
+
+        private void LoadDB()
+        {
+            using (DBEntities db = new DBEntities())
+            {
+                dgvCustomer.ItemsSource = db.Customer.ToList<Customer>();
+                datagrid = dgvCustomer;
+            }
+        }
+
+        private void InsertBtn_Click(object sender, RoutedEventArgs e)
+        {
+            InsertPage Ipage = new InsertPage();
+            Ipage.ShowDialog();
+        }
+
+        private void UpdateBtn_Click(object sender, RoutedEventArgs e)
+        {
+            int Id = (dgvCustomer.SelectedItem as Customer).CustomerID;
+            UpdatePage Upage = new UpdatePage(Id);
+            Upage.ShowDialog();
+        }
+
+        private void DeleteBtn_Click(object sender, RoutedEventArgs e)
+        {
+            using (DBEntities db = new DBEntities())
+            {
+                int Id = (dgvCustomer.SelectedItem as Customer).CustomerID;
+                var deleteMember = db.Customer.Where(c => c.CustomerID == Id).Single();
+                db.Customer.Remove(deleteMember);
+                db.SaveChanges();
+                dgvCustomer.ItemsSource = db.Customer.ToList();
+            }
+        }
+
+    
+
+
     }
 }

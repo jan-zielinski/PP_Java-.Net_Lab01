@@ -1,0 +1,19 @@
+﻿<Window x:Class="Lab01.InsertPage"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Lab01"
+        mc:Ignorable="d"
+        Title="InsertPage" Height="250" Width="400">
+    <Grid Margin="0,0,2,-21">
+        <TextBlock HorizontalAlignment="Left" Margin="76,68,0,0" TextWrapping="Wrap" Text="First Name" VerticalAlignment="Top" Width="94"/>
+        <TextBlock HorizontalAlignment="Left" Margin="76,89,0,0" TextWrapping="Wrap" Text="Last Name" VerticalAlignment="Top" Width="111"/>
+        <TextBlock HorizontalAlignment="Left" Margin="76,110,0,0" TextWrapping="Wrap" Text="City" VerticalAlignment="Top" Width="57"/>
+        <TextBox HorizontalAlignment="Left" Height="23" Margin="167,67,0,0" TextWrapping="Wrap" x:Name="firstnameTextBox" VerticalAlignment="Top" Width="120" />
+        <TextBox HorizontalAlignment="Left" Height="23" Margin="167,89,0,0" TextWrapping="Wrap" x:Name="lastnameTextBox" VerticalAlignment="Top" Width="120"/>
+        <TextBox HorizontalAlignment="Left" Height="23" Margin="167,109,0,0" TextWrapping="Wrap" x:Name="cityTextBox" VerticalAlignment="Top" Width="120"/>
+        <Button x:Name="insertBtn" Content="Insert" HorizontalAlignment="Left" Margin="167,137,0,0" VerticalAlignment="Top" Width="75" Click="InsertBtn_Click"/>
+
+    </Grid>
+</Window>
