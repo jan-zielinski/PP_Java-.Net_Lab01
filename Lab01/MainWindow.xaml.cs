@@ -102,7 +102,6 @@ namespace Lab01
                 string result = await Client.GetStringAsync(websiteTextBox.Text);
 
                 string name = Regex.Match(result, @"<title>\s*(.+?)\s*</title>", RegexOptions.IgnoreCase).Groups["1"].Value;
-                //https://www.dotnetperls.com/title-html
                 string ageString = Regex.Match(result, "[0-9]+").Value;
 
                 if (int.TryParse(ageString, out int age))
